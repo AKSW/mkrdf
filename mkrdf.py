@@ -3,6 +3,7 @@ from mkdocs.config import base, config_options as c, MkDocsConfig
 from mkdocs.structure.files import Files
 from jinja2 import Environment
 from rdflib import Graph
+from jinja-rdf import register_filters
 
 class MkRDFPluginConfig(base.Config):
     graph_file = c.Optional(c.File(exists=True))
@@ -13,11 +14,13 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         """Register a new file per resource"""
         g = Graph()
         g.parse(source=config.graph_file)
-        pass
+        g
+        return files
 
     def on_env(self, env: Environment, config: MkDocsConfig, files: Files, **kwargs) -> Environment | None:
         """Register the jinja filters"""
-        pass
+        register_filters(env)
+        return env
 
     def on_page_context(self, **kwargs):
         """Set the relevant variables for each page.
