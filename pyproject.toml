@@ -11,7 +11,8 @@ requires-python = ">=3.11,<4.0"
 dependencies = [
     "jinja-rdf @ file:///var/home/natanael/Documents/Workspaces/pub/jinja-rdf",
     "mkdocs (>=1.6.1,<2.0.0)",
-    "rdflib (>=7.1.4,<8.0.0)"
+    "rdflib (>=7.1.4,<8.0.0)",
+    "loguru (>=0.7.3,<0.8.0)"
 ]
 
 

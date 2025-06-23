@@ -1,9 +1,12 @@
 from mkdocs.plugins import BasePlugin
-from mkdocs.config import base, config_options as c, MkDocsConfig
-from mkdocs.structure.files import Files
+from mkdocs.config import base, config_options as c
+from mkdocs.config.defaults import MkDocsConfig
+from mkdocs.structure.files import Files, File
 from jinja2 import Environment
 from rdflib import Graph
-from jinja-rdf import register_filters
+from jinja_rdf import register_filters
+from jinja_rdf.graph_handling import GraphToFilesystemHelper
+from loguru import logger
 
 class MkRDFPluginConfig(base.Config):
     graph_file = c.Optional(c.File(exists=True))
@@ -12,9 +15,12 @@ class MkRDFPluginConfig(base.Config):
 class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
     def on_files(self, files: Files, config: MkDocsConfig, **kwargs) -> Files | None:
         """Register a new file per resource"""
+        logger.debug(self.config)
         g = Graph()
-        g.parse(source=config.graph_file)
-        g
+        g.parse(source=self.config.graph_file)
+
+        for path in GraphToFilesystemHelper(self.config.base_iri).graph_to_paths(g):
+            files.append(File(path=path, src_dir=None, dest_dir="."))
         return files
 
     def on_env(self, env: Environment, config: MkDocsConfig, files: Files, **kwargs) -> Environment | None:
