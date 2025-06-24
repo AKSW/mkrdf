@@ -2,6 +2,9 @@ from mkdocs.plugins import BasePlugin
 from mkdocs.config import base, config_options as c
 from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files, File
+from mkdocs.structure.pages import Page
+from mkdocs.structure.nav import Navigation
+from mkdocs.utils.templates import TemplateContext
 from jinja2 import Environment
 from rdflib import Graph
 from jinja_rdf import register_filters
@@ -44,7 +47,15 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         register_filters(env)
         return env
 
-    # def on_page_context(self, **kwargs):
-    #     """Set the relevant variables for each page.
-    #     Maybe we don't need it."""
-    #     pass
+    def on_page_context(
+        self,
+        context: TemplateContext,
+        page: Page,
+        config: MkDocsConfig,
+        nav: Navigation,
+    ) -> TemplateContext:
+        """Set the relevant variables for each page.
+        Maybe we don't need it."""
+        logger.debug(page)
+        page.title = "Hi"
+        return None
