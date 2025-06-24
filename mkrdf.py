@@ -17,20 +17,12 @@ class MkRDFPluginConfig(base.Config):
 class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
     def on_files(self, files: Files, config: MkDocsConfig, **kwargs) -> Files | None:
         """Register a new file per resource"""
-        logger.debug(self.config)
         g = Graph()
         g.parse(source=self.config.graph_file)
 
         for path, _ in GraphToFilesystemHelper(self.config.base_iri).graph_to_paths(g):
-            logger.debug(path)
-            files.append(
-                File(
-                    path=path,
-                    src_dir=".",
-                    dest_dir=config.site_dir,
-                    use_directory_urls=config.use_directory_urls,
-                )
-            )
+            logger.debug(f'Append files for "{path}"')
+            files.append(File.generated(config=config, src_uri=path, content=str(path)))
         return files
 
     def on_env(
