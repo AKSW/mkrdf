@@ -32,7 +32,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         register_filters(env)
         return env
 
-    def on_page_context(self, **kwargs):
-        """Set the relevant variables for each page.
-        Maybe we don't need it."""
-        pass
+    # def on_page_context(self, **kwargs):
+    #     """Set the relevant variables for each page.
+    #     Maybe we don't need it."""
+    #     pass
