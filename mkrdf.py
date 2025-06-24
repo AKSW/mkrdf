@@ -9,6 +9,13 @@ from jinja_rdf.graph_handling import GraphToFilesystemHelper
 from loguru import logger
 
 
+def get_content(resource_iri, path):
+    return f"""## {{{{ {path} | upper }}}}
+iri: `{resource_iri}`
+name: {path}
+"""
+
+
 class MkRDFPluginConfig(base.Config):
     graph_file = c.Optional(c.File(exists=True))
     base_iri = c.Type(str, default="a default value")
@@ -20,9 +27,14 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         g = Graph()
         g.parse(source=self.config.graph_file)
 
-        for path, _ in GraphToFilesystemHelper(self.config.base_iri).graph_to_paths(g):
-            logger.debug(f'Append files for "{path}"')
-            files.append(File.generated(config=config, src_uri=path, content=str(path)))
+        for resource_iri, path, _ in GraphToFilesystemHelper(
+            self.config.base_iri
+        ).graph_to_paths(g):
+            logger.debug(f'Append file for iri: "{resource_iri}" at path: "{path}"')
+            content = get_content(resource_iri, path)
+            files.append(
+                File.generated(config=config, src_uri=path + ".md", content=content)
+            )
         return files
 
     def on_env(
