@@ -8,9 +8,11 @@ from jinja_rdf import register_filters
 from jinja_rdf.graph_handling import GraphToFilesystemHelper
 from loguru import logger
 
+
 class MkRDFPluginConfig(base.Config):
     graph_file = c.Optional(c.File(exists=True))
-    base_iri = c.Type(str, default='a default value')
+    base_iri = c.Type(str, default="a default value")
+
 
 class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
     def on_files(self, files: Files, config: MkDocsConfig, **kwargs) -> Files | None:
@@ -31,7 +33,9 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
             )
         return files
 
-    def on_env(self, env: Environment, config: MkDocsConfig, files: Files, **kwargs) -> Environment | None:
+    def on_env(
+        self, env: Environment, config: MkDocsConfig, files: Files, **kwargs
+    ) -> Environment | None:
         """Register the jinja filters"""
         register_filters(env)
         return env
