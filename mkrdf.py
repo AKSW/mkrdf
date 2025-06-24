@@ -19,8 +19,16 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         g = Graph()
         g.parse(source=self.config.graph_file)
 
-        for path in GraphToFilesystemHelper(self.config.base_iri).graph_to_paths(g):
-            files.append(File(path=path, src_dir=None, dest_dir="."))
+        for path, _ in GraphToFilesystemHelper(self.config.base_iri).graph_to_paths(g):
+            logger.debug(path)
+            files.append(
+                File(
+                    path=path,
+                    src_dir=".",
+                    dest_dir=config.site_dir,
+                    use_directory_urls=config.use_directory_urls,
+                )
+            )
         return files
 
     def on_env(self, env: Environment, config: MkDocsConfig, files: Files, **kwargs) -> Environment | None:
