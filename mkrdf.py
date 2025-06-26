@@ -32,6 +32,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         """Register a new file per resource"""
         g = Graph()
         g.parse(source=self.config.graph_file)
+        self.graph = g
 
         for resource_iri, path, _ in GraphToFilesystemHelper(
             self.config.base_iri
@@ -89,8 +90,5 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         config: MkDocsConfig,
         nav: Navigation,
     ) -> TemplateContext:
-        """Set the relevant variables for each page.
-        Maybe we don't need it."""
-        logger.debug(page)
-        page.title = "Hi"
-        return None
+        """Set the relevant variables for each page."""
+        return {**get_context(self.graph, page.rdf_resource), **context}
