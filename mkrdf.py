@@ -6,9 +6,12 @@ from mkdocs.structure.pages import Page
 from mkdocs.structure.nav import Navigation
 from mkdocs.utils.templates import TemplateContext
 from jinja2 import Environment
-from rdflib import Graph
-from jinja_rdf import register_filters
-from jinja_rdf.graph_handling import GraphToFilesystemHelper
+from pathlib import PurePosixPath
+from urllib.parse import urlsplit, urlunsplit
+from rdflib import Graph, URIRef
+from jinja_rdf import get_context, register_filters
+from jinja_rdf.graph_handling import GraphToFilesystemHelper, IRIPath
+from jinja_rdf.rdf_resource import RDFResource
 from loguru import logger
 
 
@@ -35,10 +38,42 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         ).graph_to_paths(g):
             logger.debug(f'Append file for iri: "{resource_iri}" at path: "{path}"')
             content = get_content(resource_iri, path)
-            files.append(
-                File.generated(config=config, src_uri=path + ".md", content=content)
-            )
+            file = File.generated(config=config, src_uri=path + ".md", content=content)
+            file.resource_iri = resource_iri
+            files.append(file)
         return files
+
+    def on_page_content(self, html, page, config, files):
+        logger.debug(f"page meta: {page.meta}")
+        if not "title" in page.meta:
+            # insert some title
+            pass
+
+        if "resource_iri" in page.meta:
+            page.meta["resource_iri"] = URIRef(page.meta["resource_iri"])
+        elif hasattr(page.file, "resource_iri"):
+            page.meta["resource_iri"] = page.file.resource_iri
+        else:
+            base_iri = urlsplit(self.config.base_iri)
+            logger.debug(base_iri)
+            page.meta["resource_iri"] = URIRef(
+                urlunsplit(
+                    (
+                        base_iri.scheme,
+                        base_iri.netloc,
+                        str(PurePosixPath(base_iri.path) / page.url),
+                        "",
+                        "",
+                    )
+                )
+            )
+        logger.info(f"resource_iri: {page.meta['resource_iri']}")
+        page.rdf_resource = RDFResource(
+            self.graph, page.meta["resource_iri"], self.graph.namespace_manager
+        )
+
+        if not "template" in page.meta:
+            page.meta["template"] = "rdf.html"
 
     def on_env(
         self, env: Environment, config: MkDocsConfig, files: Files, **kwargs
