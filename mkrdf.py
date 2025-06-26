@@ -70,6 +70,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
             # insert some title
             pass
 
+        # register resource IRIs
         if "resource_iri" in page.meta:
             page.meta["resource_iri"] = URIRef(page.meta["resource_iri"])
         elif hasattr(page.file, "resource_iri"):
@@ -88,7 +89,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
                     )
                 )
             )
-        logger.info(f"resource_iri: {page.meta['resource_iri']}")
+        logger.info(f"Registerd resource_iri: {page.meta['resource_iri']}")
         page.rdf_resource = RDFResource(
             self.graph, page.meta["resource_iri"], self.graph.namespace_manager
         )
