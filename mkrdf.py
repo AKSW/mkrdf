@@ -10,7 +10,7 @@ from pathlib import PurePosixPath
 from urllib.parse import urlsplit, urlunsplit
 from rdflib import Graph, URIRef
 from jinja_rdf import get_context, register_filters
-from jinja_rdf.graph_handling import GraphToFilesystemHelper, IRIPath
+from jinja_rdf.graph_handling import GraphToFilesystemHelper
 from jinja_rdf.rdf_resource import RDFResource
 from loguru import logger
 
@@ -66,7 +66,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
 
     def on_page_content(self, html, page, config, files):
         logger.debug(f"page meta: {page.meta}")
-        if not "title" in page.meta:
+        if "title" not in page.meta:
             # insert some title
             pass
 
@@ -93,7 +93,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
             self.graph, page.meta["resource_iri"], self.graph.namespace_manager
         )
 
-        if not "template" in page.meta:
+        if "template" not in page.meta:
             page.meta["template"] = "rdf.html"
 
     def on_env(
