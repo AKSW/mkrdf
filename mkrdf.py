@@ -10,7 +10,7 @@ from pathlib import PurePosixPath
 from urllib.parse import urlsplit, urlunsplit
 from rdflib import Graph, URIRef
 from jinja_rdf import get_context, register_filters
-from jinja_rdf.graph_handling import GraphToFilesystemHelper
+from jinja_rdf.graph_handling import GraphToFilesystemHelper, TemplateSelectionHelper
 from jinja_rdf.rdf_resource import RDFResource
 from loguru import logger
 
@@ -36,11 +36,11 @@ class MkRDFPluginConfig(base.Config):
     base_iri = c.Optional(c.URL())
     selection = c.SubConfig(_MkRDFPluginConfig_Selection, validate=True)
     default_template = c.Optional(c.Type(str))
-    class_template_map = c.Optional(
-        c.DictOfItems(c.Type(str))
+    class_template_map = c.DictOfItems(
+        c.Type(str), default={}
     )  # keys are always strings, while we expect IRIs here
-    instance_template_map = c.Optional(
-        c.DictOfItems(c.Type(str))
+    instance_template_map = c.DictOfItems(
+        c.Type(str), default={}
     )  # keys are always strings, while we expect IRIs here
 
 
@@ -93,8 +93,16 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
             self.graph, page.meta["resource_iri"], self.graph.namespace_manager
         )
 
+        # select templates
         if "template" not in page.meta:
-            page.meta["template"] = "rdf.html"
+            template = TemplateSelectionHelper(
+                self.graph,
+                self.config.class_template_map,
+                self.config.instance_template_map,
+            ).get_template_for_resource(page.rdf_resource)
+            if template:
+                logger.debug(f"Select template: {template} for {page.rdf_resource}")
+                page.meta["template"] = template
 
     def on_env(
         self, env: Environment, config: MkDocsConfig, files: Files, **kwargs
