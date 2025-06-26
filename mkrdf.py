@@ -22,21 +22,41 @@ name: {path}
 """
 
 
+class _MkRDFPluginConfig_Selection(base.Config):
+    preset = c.Optional(c.Choice(("subject_relative", "subject_all", "none")))
+    query = c.Optional(c.Type(str))
+    queries = c.Optional(c.ListOfItems(c.Type(str)))
+    list = c.Optional(c.ListOfItems(c.URL()))
+    file = c.Optional(c.File(exists=True))
+    files = c.Optional(c.ListOfItems(c.File(exists=True)))
+
+
 class MkRDFPluginConfig(base.Config):
-    graph_file = c.Optional(c.File(exists=True))
-    base_iri = c.Type(str, default="a default value")
+    graph_file = c.File(exists=True)
+    base_iri = c.Optional(c.URL())
+    selection = c.SubConfig(_MkRDFPluginConfig_Selection, validate=True)
+    default_template = c.Optional(c.Type(str))
+    class_template_map = c.Optional(
+        c.DictOfItems(c.Type(str))
+    )  # keys are always strings, while we expect IRIs here
+    instance_template_map = c.Optional(
+        c.DictOfItems(c.Type(str))
+    )  # keys are always strings, while we expect IRIs here
 
 
 class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
     def on_files(self, files: Files, config: MkDocsConfig, **kwargs) -> Files | None:
-        """Register a new file per resource"""
+        """For each resourceIri that results from the selection query, a File
+        object is generated and registered."""
+
         g = Graph()
         g.parse(source=self.config.graph_file)
         self.graph = g
 
-        for resource_iri, path, _ in GraphToFilesystemHelper(
-            self.config.base_iri
-        ).graph_to_paths(g):
+        gtfh = GraphToFilesystemHelper(self.config.base_iri)
+        nodes = set(gtfh.selection_to_nodes(self.config.selection, g))
+
+        for resource_iri, path, _ in gtfh.nodes_to_paths(nodes):
             logger.debug(f'Append file for iri: "{resource_iri}" at path: "{path}"')
             content = get_content(resource_iri, path)
             file = File.generated(config=config, src_uri=path + ".md", content=content)
