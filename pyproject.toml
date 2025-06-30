@@ -9,10 +9,10 @@ license = {text = "EUPL"}
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
-    "jinja-rdf @ file:///var/home/natanael/Documents/Workspaces/pub/jinja-rdf",
     "mkdocs (>=1.6.1,<2.0.0)",
     "rdflib (>=7.1.4,<8.0.0)",
-    "loguru (>=0.7.3,<0.8.0)"
+    "loguru (>=0.7.3,<0.8.0)",
+    "jinja-rdf (>=0.1.0,<0.2.0)"
 ]
 
 
@@ -21,7 +21,6 @@ requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-jinja-rdf = {develop = true}
 
 
 [tool.poetry.group.dev.dependencies]
