@@ -30,3 +30,6 @@ ruff = "^0.12.0"
 
 [project.entry-points."mkdocs.plugins"]
 mkrdf = "mkrdf:MkRDFPlugin"
+
+[project.urls]
+repository = "https://github.com/aksw/mkrdf"
