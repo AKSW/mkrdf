@@ -44,9 +44,29 @@ The configuration key has four sub keys, `preset`, `query`, `list`, and `file`. 
 - `file` a file explicitly listing the IRIs
 
 
-## Similar Systems
+## Related Projects
 
-This library is inspired by [Jekyll RDF](https://github.com/AKSW/jekyll-rdf).
+The implementation of jinja-rdf, kisumu, and mkrdf is a result of the lessons learned from JekyllRDF.
+
+### Jinja RDF
+
+[Jinja RDF](https://github.com/AKSW/jinja-rdf)
+
+The library that provides the filters and data model (the core).
+
+### Kisumu
+
+[kisumu](https://github.com/AKSW/kisumu)
+
+A simple command line tool and library to render a template + an RDF graph -> a static document.
+It is also build on top of Jinja RDF.
+
+### Jekyll RDF
+
+[Jekyll RDF](https://github.com/AKSW/jekyll-rdf)
+
+The implementation of jinja-rdf, kisumu, and mkrdf is a result of the lessons learned from JekyllRDF.
+Currently the three tools don't cover all features, that were implemented in JekyllRDF, if you miss a feature that you need, please provide a pull request to one of the projects.
 ([Read more about the relation](https://github.com/AKSW/jinja-rdf/blob/main/README.md#jekyll-rdf).)
 
 ## Migrate from Jekyll RDF
@@ -54,11 +74,13 @@ This library is inspired by [Jekyll RDF](https://github.com/AKSW/jekyll-rdf).
 If you migrate from Jekyll RDF you need to setup a new mkdocs project, adjust your templates and configuration.
 Many things are named differently with the hope to make it simpler for users of mkrdf without previous knowledge about Jekyll RDF.
 
-## Configuration
+### Configuration
 
 `path` is now `graph_file`
 `restriction` is now `selection` (note, that the query now binds the variable `?resourceIri` instead of `?resourceUri`)
 `baseiri` is now `base_iri`
+
+### Filters
 
 Those are the filters provided by JekyllRDF.
 
