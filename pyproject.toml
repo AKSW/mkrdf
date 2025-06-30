@@ -1,6 +1,6 @@
 [project]
 name = "mkrdf"
-version = "0.1.1"
+version = "0.1.2"
 description = ""
 authors = [
     {name = "Natanael Arndt",email = "arndtn@gmail.com"}
