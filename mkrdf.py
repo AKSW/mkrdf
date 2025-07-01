@@ -15,13 +15,6 @@ from jinja_rdf.rdf_resource import RDFResource
 from loguru import logger
 
 
-def get_content(resource_iri, path):
-    return f"""## {{{{ {path} | upper }}}}
-iri: `{resource_iri}`
-name: {path}
-"""
-
-
 class _MkRDFPluginConfig_Selection(base.Config):
     preset = c.Optional(c.Choice(("subject_relative", "subject_all", "none")))
     query = c.Optional(c.Type(str))
@@ -58,8 +51,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
 
         for resource_iri, path, _ in gtfh.nodes_to_paths(nodes):
             logger.debug(f'Append file for iri: "{resource_iri}" at path: "{path}"')
-            content = get_content(resource_iri, path)
-            file = File.generated(config=config, src_uri=path + ".md", content=content)
+            file = File.generated(config=config, src_uri=path + ".md", content="")
             file.resource_iri = resource_iri
             files.append(file)
         return files
