@@ -4,15 +4,31 @@ from mkdocs.config.defaults import MkDocsConfig
 from mkdocs.structure.files import Files, File
 from mkdocs.structure.pages import Page
 from mkdocs.structure.nav import Navigation
+from mkdocs.utils import normalize_url
 from mkdocs.utils.templates import TemplateContext
-from jinja2 import Environment
+from jinja2 import Environment, pass_context
 from pathlib import PurePosixPath
 from urllib.parse import urlsplit, urlunsplit
 from rdflib import Graph, URIRef
+from rdflib.resource import Resource
 from jinja_rdf import get_context, register_filters
 from jinja_rdf.graph_handling import GraphToFilesystemHelper, TemplateSelectionHelper
 from jinja_rdf.rdf_resource import RDFResource
 from loguru import logger
+
+
+@pass_context
+def iri_resolver(context: TemplateContext, value: str | URIRef | Resource) -> str:
+    """A Template filter to resolve an iri and return a normalized URL."""
+    if page := context.get("config").plugins.get("mkrdf").resolve(value):
+        url = page.url
+    else:
+        if isinstance(value, Resource):
+            url = value.identifier
+        else:
+            url = value
+
+    return normalize_url(str(url), page=context["page"], base=context["base_url"])
 
 
 class _MkRDFPluginConfig_Selection(base.Config):
@@ -38,6 +54,19 @@ class MkRDFPluginConfig(base.Config):
 
 
 class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
+    """This is the mkrdf plugin."""
+
+    """The resource_to_page dict is required since there is no backward relation from resource to a page."""
+    resource_iri_to_page = {}
+
+    def resolve(self, value: str | URIRef | Resource) -> Page | None:
+        """A Template filter to resolve an iri and return a normalized URL."""
+        if isinstance(value, Resource):
+            value = value.identifier
+        if isinstance(value, str):
+            value = URIRef(value)
+        return self.resource_iri_to_page.get(value)
+
     def on_files(self, files: Files, config: MkDocsConfig, **kwargs) -> Files | None:
         """For each resourceIri that results from the selection query, a File
         object is generated and registered."""
@@ -85,6 +114,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         page.rdf_resource = RDFResource(
             self.graph, page.meta["resource_iri"], self.graph.namespace_manager
         )
+        self.resource_iri_to_page[page.meta["resource_iri"]] = page
 
         # select templates
         if "template" not in page.meta:
@@ -102,6 +132,7 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
     ) -> Environment | None:
         """Register the jinja filters"""
         register_filters(env)
+        env.filters["iri_resolver"] = iri_resolver
         return env
 
     def on_page_context(
