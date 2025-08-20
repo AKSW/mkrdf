@@ -5,7 +5,7 @@ description = ""
 authors = [
     {name = "Natanael Arndt",email = "arndtn@gmail.com"}
 ]
-license = {text = "EUPL"}
+license = "EUPL-1.2"
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
