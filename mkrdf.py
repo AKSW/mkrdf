@@ -11,6 +11,7 @@ from pathlib import PurePosixPath
 from urllib.parse import urlsplit, urlunsplit
 from rdflib import Graph, URIRef
 from rdflib.resource import Resource
+from rdflib.plugins.stores.sparqlstore import SPARQLStore
 from jinja_rdf import get_context, register_filters
 from jinja_rdf.graph_handling import GraphToFilesystemHelper, TemplateSelectionHelper
 from jinja_rdf.rdf_resource import RDFResource
@@ -41,7 +42,8 @@ class _MkRDFPluginConfig_Selection(base.Config):
 
 
 class MkRDFPluginConfig(base.Config):
-    graph_file = c.File(exists=True)
+    graph_file = c.Optional(c.File(exists=True))
+    sparql_endpoint = c.Optional(c.URL())
     base_iri = c.Optional(c.URL())
     selection = c.SubConfig(_MkRDFPluginConfig_Selection, validate=True)
     default_template = c.Optional(c.Type(str))
@@ -71,8 +73,12 @@ class MkRDFPlugin(BasePlugin[MkRDFPluginConfig]):
         """For each resourceIri that results from the selection query, a File
         object is generated and registered."""
 
-        g = Graph()
-        g.parse(source=self.config.graph_file)
+        if self.config.graph_file:
+            g = Graph()
+            g.parse(source=self.config.graph_file)
+        elif self.config.sparql_endpoint:
+            store = SPARQLStore(query_endpoint=self.config.sparql_endpoint)
+            g = Graph(store=store)
         self.graph = g
 
         gtfh = GraphToFilesystemHelper(self.config.base_iri)
