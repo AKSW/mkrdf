@@ -90,3 +90,7 @@ Those are the filters provided by JekyllRDF.
 - `sparql_query`  -> `query`
 - `rdf_container` (not available, TODO)
 - `rdf_collection` (not available, TODO)
+
+## Versioning
+
+For now, I follow the [0ver scheme](https://0ver.org/).
