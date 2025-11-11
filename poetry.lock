@@ -562,25 +562,29 @@ pyyaml = "*"
 
 [[package]]
 name = "rdflib"
-version = "7.1.4"
+version = "8.0.0a0"
 description = "RDFLib is a Python library for working with RDF, a simple yet powerful language for representing information."
 optional = false
-python-versions = "<4.0.0,>=3.8.1"
+python-versions = ">=3.9"
 groups = ["main"]
-files = [
-    {file = "rdflib-7.1.4-py3-none-any.whl", hash = "sha256:72f4adb1990fa5241abd22ddaf36d7cafa5d91d9ff2ba13f3086d339b213d997"},
-    {file = "rdflib-7.1.4.tar.gz", hash = "sha256:fed46e24f26a788e2ab8e445f7077f00edcf95abb73bcef4b86cefa8b62dd174"},
-]
+files = []
+develop = false
 
 [package.dependencies]
-pyparsing = ">=2.1.0,<4"
+pyparsing = ">=3.2.0,<4"
 
 [package.extras]
-berkeleydb = ["berkeleydb (>=18.1.0,<19.0.0)"]
-html = ["html5rdf (>=1.2,<2)"]
-lxml = ["lxml (>=4.3,<6.0)"]
+berkeleydb = ["berkeleydb (>18.1.0)"]
+html = ["html5rdf (>=1.2.1,<2)"]
+lxml = ["lxml (>=4.8.0,<7.0) ; python_version < \"3.11\"", "lxml (>=4.9.3,<7.0) ; python_version >= \"3.11\""]
 networkx = ["networkx (>=2,<4)"]
 orjson = ["orjson (>=3.9.14,<4)"]
+
+[package.source]
+type = "git"
+url = "https://github.com/white-gecko/rdflib"
+reference = "feature/sparqlInitBindings"
+resolved_reference = "1510f26c94aafb3506998a0ef9c9cf8b4097f168"
 
 [[package]]
 name = "ruff"
@@ -684,4 +688,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "511fd0ae2c9c288862b9a56f089702d6a4916026e04396f9a53a76248c20d303"
+content-hash = "d26d996f2baa0e4a03652b8a7385c0d745ede68543b50d4ba0f0ac95405059c3"

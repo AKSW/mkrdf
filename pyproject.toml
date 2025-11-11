@@ -10,7 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
     "mkdocs (>=1.6.1,<2.0.0)",
-    "rdflib (>=7.1.4,<9.0.0)",
+    "rdflib @ git+https://github.com/white-gecko/rdflib@feature/sparqlInitBindings",
     "loguru (>=0.7.3,<0.8.0)",
     "jinja-rdf (>=0.1.8,<0.2.0)"
 ]
