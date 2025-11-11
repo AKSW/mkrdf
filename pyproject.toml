@@ -1,6 +1,6 @@
 [project]
 name = "mkrdf"
-version = "0.2.2"
+version = "0.2.3"
 description = ""
 authors = [
     {name = "Natanael Arndt",email = "arndtn@gmail.com"}
@@ -12,7 +12,7 @@ dependencies = [
     "mkdocs (>=1.6.1,<2.0.0)",
     "rdflib (>=7.1.4,<9.0.0)",
     "loguru (>=0.7.3,<0.8.0)",
-    "jinja-rdf (>=0.1.4,<0.2.0)"
+    "jinja-rdf (>=0.1.5,<0.2.0)"
 ]
 
 
