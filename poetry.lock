@@ -140,14 +140,14 @@ files = [
 
 [[package]]
 name = "jinja-rdf"
-version = "0.1.5"
+version = "0.1.8"
 description = ""
 optional = false
 python-versions = "<4.0,>=3.11"
 groups = ["main"]
 files = [
-    {file = "jinja_rdf-0.1.5-py3-none-any.whl", hash = "sha256:e5dd39980504e0558c9eee377899d068335d362093fd7bac2a4e7b690121f126"},
-    {file = "jinja_rdf-0.1.5.tar.gz", hash = "sha256:a9363d0d531897274719f0d8909b446dee67ff5cf314f5d6b9c54eb87ae58b6a"},
+    {file = "jinja_rdf-0.1.8-py3-none-any.whl", hash = "sha256:4b9e3fc48615a00ceb9b515310776fdbde01f8583f5f9bc8849bae412dd71646"},
+    {file = "jinja_rdf-0.1.8.tar.gz", hash = "sha256:21aa9661089fe1ef6fb646d6cfa98cd469f2bf586b7f13b58e0d952e38c7efb8"},
 ]
 
 [package.dependencies]
@@ -684,4 +684,4 @@ dev = ["black (>=19.3b0) ; python_version >= \"3.6\"", "pytest (>=4.6.2)"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.11,<4.0"
-content-hash = "cb985d433d906cee43e5262f04c13cb5ffe4b8e4f3129adcc9a31948c8d4bda7"
+content-hash = "511fd0ae2c9c288862b9a56f089702d6a4916026e04396f9a53a76248c20d303"
